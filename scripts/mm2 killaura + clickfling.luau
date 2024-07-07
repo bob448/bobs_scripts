@@ -39,21 +39,23 @@ local function getKnife(char:Model,player:Player)
     char=char or getChar(player)
     local function isKnife(v)
         if v:FindFirstChild("KnifeScriptR15") or v:FindFirstChild("KnifeScriptR6") then
-            return true
+            return true,false
+        elseif v:FindFirstChild("KnifeServer") then
+            return true,true
         end
-        return false
+        return false,false
     end
     for i,v in ipairs(char:GetChildren()) do
         if v:IsA("Tool") then
-            if isKnife(v) then
-                return v
+            if isKnife(v)[1] then
+                return v,isKnife(v)[2]
             end
         end
     end
     for i,v in ipairs(player.Backpack:GetChildren()) do
         if v:IsA("Tool") then
-            if isKnife(v) then
-                return v
+            if isKnife(v)[1] then
+                return v,isKnife(v)[2]
             end
         end
     end
@@ -66,8 +68,10 @@ local function CharacterAdded(character:Model)
     char=character
     hum=getHum(char) or char:WaitForChild("Humanoid")
     root=getRoot(char) or char:WaitForChild("HumanoidRootPart")
-    local knife
-    repeat task.wait(); knife=getKnife(char, player) until knife
+    local knifevalue
+    repeat task.wait(); knifevalue=getKnife(char, player) until knifevalue
+    local knife=knifevalue[1]
+    local knockoffgame=knifevalue[2]
     local handle=knife:WaitForChild("Handle")
     getgenv().SETTINGS.Distance=getgenv().SETTINGS.Distance or 30
     while task.wait() and hum.Health>0 and char and char.Parent do
@@ -77,7 +81,11 @@ local function CharacterAdded(character:Model)
             local thum=getHum(tchar)
             if v~=player and troot and thum and thum.Health>0 and toggled and v:DistanceFromCharacter(root.Position)<=getgenv().SETTINGS.Distance then
                 knife.Parent=char
-                knife:Activate()
+                if knockoffgame then
+                    knife:Activate()
+                elseif knife:FindFirstChild("Stab") and knife:FindFirstChild("Stab"):IsA("RemoteEvent") then
+                    knife:FindFirstChild("Stab"):FireServer("Slash")
+                end
                 firetouchinterest(handle, getRoot(getChar(v)),0)
                 firetouchinterest(handle, getRoot(getChar(v)),1)
             end
