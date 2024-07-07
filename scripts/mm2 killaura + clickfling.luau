@@ -85,6 +85,8 @@ local function CharacterAdded(character:Model)
                     knife:Activate()
                 elseif knife:FindFirstChild("Stab") and knife:FindFirstChild("Stab"):IsA("RemoteEvent") then
                     knife:FindFirstChild("Stab"):FireServer("Slash")
+                else
+                    knife:Activate()
                 end
                 firetouchinterest(handle, getRoot(getChar(v)),0)
                 firetouchinterest(handle, getRoot(getChar(v)),1)
