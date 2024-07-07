@@ -1,4 +1,4 @@
-![Bob's Scripts](bobs_scripts.png)
+![Bob's Scripts](images/bobs_scripts.png)
 
 # Welcome to my scripts repo.
 ## I will publish all of my scripts (*that I want to share*) in this repo.
