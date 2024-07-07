@@ -89,6 +89,7 @@ local function CharacterAdded(character:Model)
                     knife:Activate()
                 end
                 firetouchinterest(handle, getRoot(getChar(v)),0)
+                task.wait()
                 firetouchinterest(handle, getRoot(getChar(v)),1)
             end
         end
@@ -109,16 +110,22 @@ local inputbegan;inputbegan=uis.InputBegan:Connect(function(input,proc)
             local tchar=mouse.Target.Parent
             local troot=getRoot(tchar)
             local plr=tchar and players:GetPlayerFromCharacter(tchar)
-            local knife=char and getKnife(char, player)
+            local knifevalue=char and getKnife(char, player)
+            local knife=knifevalue and knifevalue[1]
+            local knockoffgame=knifevalue[2]
             local handle=knife:WaitForChild("Handle")
             if troot and plr and plr~=player and knife then
                 knife.Parent=char
-                knife:Activate()
+                if knockoffgame then
+                    knife:Activate()
+                elseif knife:FindFirstChild("Stab") and knife:FindFirstChild("Stab"):IsA("RemoteEvent") then
+                    knife:FindFirstChild("Stab"):FireServer("Slash")
+                else
+                    knife:Activate()
+                end
                 firetouchinterest(handle,troot,0)
-                task.spawn(function()
-                    task.wait()
-                    firetouchinterest(handle,troot,1)
-                end)
+                task.wait()
+                firetouchinterest(handle,troot,1)
             end
         end
     end
