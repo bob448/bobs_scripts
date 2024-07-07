@@ -18,6 +18,8 @@ getgenv().SETTINGS={
     Disconnect=false
 }
 
+local SETTINGS=getgenv().SETTINGS or {}
+
 local char=nil
 local root=nil
 local hum=nil
@@ -48,14 +50,14 @@ local function getKnife(char:Model,player:Player)
     for i,v in ipairs(char:GetChildren()) do
         if v:IsA("Tool") then
             if isKnife(v)[1] then
-                return v,isKnife(v)[2]
+                return {v,isKnife(v)[2]}
             end
         end
     end
     for i,v in ipairs(player.Backpack:GetChildren()) do
         if v:IsA("Tool") then
             if isKnife(v)[1] then
-                return v,isKnife(v)[2]
+                return {v,isKnife(v)[2]}
             end
         end
     end
@@ -73,13 +75,13 @@ local function CharacterAdded(character:Model)
     local knife=knifevalue[1]
     local knockoffgame=knifevalue[2]
     local handle=knife:WaitForChild("Handle")
-    getgenv().SETTINGS.Distance=getgenv().SETTINGS.Distance or 30
+    SETTINGS.Distance=SETTINGS.Distance or 30
     while task.wait() and hum.Health>0 and char and char.Parent do
         for i,v in ipairs(players:GetPlayers()) do
             local tchar=getChar(v)
             local troot=getRoot(tchar)
             local thum=getHum(tchar)
-            if v~=player and troot and thum and thum.Health>0 and toggled and v:DistanceFromCharacter(root.Position)<=getgenv().SETTINGS.Distance then
+            if v~=player and troot and thum and thum.Health>0 and toggled and v:DistanceFromCharacter(root.Position)<=SETTINGS.Distance then
                 knife.Parent=char
                 if knockoffgame then
                     knife:Activate()
@@ -89,7 +91,6 @@ local function CharacterAdded(character:Model)
                     knife:Activate()
                 end
                 firetouchinterest(handle, getRoot(getChar(v)),0)
-                task.wait()
                 firetouchinterest(handle, getRoot(getChar(v)),1)
             end
         end
@@ -102,10 +103,10 @@ local function createChatMsg(text:string,color)
 end
 
 local inputbegan;inputbegan=uis.InputBegan:Connect(function(input,proc)
-    if not proc and getgenv().SETTINGS.Enabled and getgenv().SETTINGS.KeyCode and input.KeyCode==getgenv().SETTINGS.KeyCode then
+    if not proc and SETTINGS.Enabled and SETTINGS.KeyCode and input.KeyCode==SETTINGS.KeyCode then
         toggled = not toggled
         createChatMsg("Toggled killaura to "..tostring(toggled))
-    elseif not proc and getgenv().SETTINGS.Enabled and getgenv().SETTINGS.ClickKill and input.UserInputType==Enum.UserInputType.MouseButton1 or input.UserInputType==Enum.UserInputType.Touch then
+    elseif not proc and SETTINGS.Enabled and SETTINGS.ClickKill and input.UserInputType==Enum.UserInputType.MouseButton1 or input.UserInputType==Enum.UserInputType.Touch then
         if mouse.Target and char and hum then
             local tchar=mouse.Target.Parent
             local troot=getRoot(tchar)
@@ -134,11 +135,11 @@ end)
 local charadd;charadd=player.CharacterAdded:Connect(CharacterAdded)
 
 if getChar(player) then
-    CharacterAdded(getChar(player))
+    task.spawn(function() CharacterAdded(getChar(player)) end)
 end
 
 task.spawn(function()
-    repeat task.wait() until getgenv().SETTINGS.Disconnect
+    repeat task.wait() until SETTINGS.Disconnect
     if charadd then
         charadd:Disconnect()
     end
