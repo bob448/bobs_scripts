@@ -39,11 +39,11 @@ local function getKnife(char:Model,player:Player)
     char=char or getChar(player)
     local function isKnife(v)
         if v:FindFirstChild("KnifeScriptR15") or v:FindFirstChild("KnifeScriptR6") then
-            return true,false
+            return {true,false}
         elseif v:FindFirstChild("KnifeServer") then
-            return true,true
+            return {true,true}
         end
-        return false,false
+        return {false,false}
     end
     for i,v in ipairs(char:GetChildren()) do
         if v:IsA("Tool") then
