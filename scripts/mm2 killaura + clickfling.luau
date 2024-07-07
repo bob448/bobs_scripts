@@ -10,6 +10,11 @@ made by bob448
 
 ]]
 
+if getgenv().SETTINGS then
+    getgenv().SETTINGS.Disconnect=true
+    task.wait()
+end
+
 getgenv().SETTINGS={
     Enabled=true,
     KeyCode=Enum.KeyCode.X,
