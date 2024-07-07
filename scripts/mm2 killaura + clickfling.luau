@@ -105,8 +105,10 @@ local inputbegan;inputbegan=uis.InputBegan:Connect(function(input,proc)
                 knife.Parent=char
                 knife:Activate()
                 firetouchinterest(handle,troot,0)
-                task.wait()
-                firetouchinterest(handle,troot,1)
+                task.spawn(function()
+                    task.wait()
+                    firetouchinterest(handle,troot,1)
+                end)
             end
         end
     end
