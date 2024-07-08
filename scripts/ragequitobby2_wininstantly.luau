@@ -14,7 +14,7 @@ getgenv().Win=function()
 
     task.spawn(function()
         local index=0
-        while task.wait() do
+        while true do
             if not root.Parent or not char.Parent then
                 char=player.Character or player.CharacterAdded:Wait()
                 root=char:WaitForChild("HumanoidRootPart")
