@@ -88,6 +88,7 @@ local function CharacterAdded(character:Model)
             local thum=getHum(tchar)
             if v~=player and troot and thum and thum.Health>0 and toggled and v:DistanceFromCharacter(root.Position)<=SETTINGS.Distance then
                 knife.Parent=char
+                task.wait()
                 if knockoffgame then
                     knife:Activate()
                 elseif knife:FindFirstChild("Stab") and knife:FindFirstChild("Stab"):IsA("RemoteEvent") then
@@ -122,6 +123,7 @@ local inputbegan;inputbegan=uis.InputBegan:Connect(function(input,proc)
             local handle=knife:WaitForChild("Handle")
             if troot and plr and plr~=player and knife then
                 knife.Parent=char
+                task.wait()
                 if knockoffgame then
                     knife:Activate()
                 elseif knife:FindFirstChild("Stab") and knife:FindFirstChild("Stab"):IsA("RemoteEvent") then
@@ -130,7 +132,6 @@ local inputbegan;inputbegan=uis.InputBegan:Connect(function(input,proc)
                     knife:Activate()
                 end
                 firetouchinterest(handle,troot,0)
-                task.wait()
                 firetouchinterest(handle,troot,1)
             end
         end
